@@ -165,7 +165,8 @@ def tavily_search(q: str) -> str:
 
 #### LLM initialization
 def get_llm():
-    return init_chat_model("openai:gpt-4o")
+    ### google_genai:gemini-2.0-flash openai:gpt-4o
+    return init_chat_model("google_genai:gemini-2.0-flash", transport="rest")
 
 
 
