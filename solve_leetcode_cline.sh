@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
-# 避免 pager 卡住
-export PAGER=cat
-export LESS='-FIRX'
-export TERM=dumb NO_COLOR=1 CI=1
-
+#### get the input file for the LeetCode problem promptand interface
 INPUT_FILE="${1:-input_file}"
 [[ -f "$INPUT_FILE" ]] || { echo "❌ file not found: $INPUT_FILE"; exit 1; }
 
 PROMPT_CONTENT="$(cat "$INPUT_FILE")"
 
+#### system policy for cline to solve tasks
 POLICY="$(cat <<'EOF'
 System instruction:
 - DO NOT invoke any tools.
@@ -26,24 +23,15 @@ System instruction:
 EOF
 )"
 
-
-
-
+#### full user prompt message for cline
 FULL_MSG="${POLICY}
 
 ${PROMPT_CONTENT}"
 
+#### clean cline instance and start a new one each time
 echo "==> Cleaning up"
 cline instance kill -a || true
 
 echo "==> Starting instance"
+#### cline execution
 cline -o "$FULL_MSG"
-# ADDR="$(cline instance new --default | awk '/Address:/ {print $2}')"
-
-# echo "==> Creating task: "$"$ADDR"""
-# cline task new --address "$ADDR" --mode act --no-interactive --output-format json "$FULL_MSG"
-# cline task view --address "$ADDR" --follow -c
-# cline instance kill "$ADDR"
-
-#echo "==> Shutting down"
-#cline instance kill -a || true
